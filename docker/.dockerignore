@@ -1,0 +1,11 @@
+.env
+.env.template
+
+*.md
+
+.vscode
+.husky
+.github
+
+dist
+node_modules
