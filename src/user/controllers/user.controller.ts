@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { Role } from 'src/auth/enums/role.enum';
@@ -19,5 +19,12 @@ export class UserController {
     @HttpCode(201)
     async create(@Body() createUserDto: CreateUserDto): Promise<User> {
         return await this.userService.create(createUserDto);
+    }
+
+    @Get(':userId')
+    @Roles(Role.Admin)
+    @HttpCode(200)
+    async findById(@Param('userId') userId: string): Promise<User> {
+        return await this.userService.findById(userId);
     }
 }

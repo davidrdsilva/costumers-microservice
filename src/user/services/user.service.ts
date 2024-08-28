@@ -60,7 +60,10 @@ export class UserService implements UserServiceInterface {
     }
 
     async findById(userId: string): Promise<User> {
-        const user = await this.userRepository.findOneBy({ id: userId });
+        const user = await this.userRepository.findOne({
+            where: { id: userId },
+            relations: { bankingDetails: true, addresses: true },
+        });
         if (!user) {
             throw new NotFoundException('User not found');
         }
