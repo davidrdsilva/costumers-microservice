@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Entity } from 'typeorm';
 
-@Entity()
 export class AddressDto {
     @ApiProperty({ description: 'Rua.' })
     @IsString()
@@ -30,6 +29,38 @@ export class AddressDto {
     postalCode: string;
 
     @ApiProperty({ description: '(Opcional) Distrito.', required: false })
+    @IsString()
+    district?: string;
+}
+
+export class UpdateAddressDto {
+    @ApiProperty({ description: 'Rua.', required: false })
+    @IsOptional()
+    @IsString()
+    street?: string;
+
+    @ApiProperty({ description: 'Cidade ou município.', required: false })
+    @IsOptional()
+    @IsString()
+    city?: string;
+
+    @ApiProperty({ description: 'Estado.', required: false })
+    @IsOptional()
+    @IsString()
+    state?: string;
+
+    @ApiProperty({ description: 'País.', required: false })
+    @IsOptional()
+    @IsString()
+    country?: string;
+
+    @ApiProperty({ description: 'CEP.', required: false })
+    @IsOptional()
+    @IsString()
+    postalCode?: string;
+
+    @ApiProperty({ description: '(Opcional) Distrito.', required: false })
+    @IsOptional()
     @IsString()
     district?: string;
 }

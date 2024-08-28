@@ -1,4 +1,10 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+    ForbiddenException,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -57,8 +63,43 @@ export class UserService implements UserServiceInterface {
         }
     }
 
-    update(userDto: UpdateUserDto): Promise<User> {
-        throw new Error('Method not implemented.');
+    async update(req: Request, userId: string, updateData: UpdateUserDto): Promise<User> {
+        const loggedUser: User = req['user'];
+
+        if (loggedUser.id !== userId) {
+            throw new ForbiddenException("You can not perform this action on other user's profile.");
+        }
+
+        const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            const existingUser = await this.findById(userId);
+
+            // Merge existing user with the provided fields to update
+            const updatedBankingDetails = this.bankingDetailsRepository.merge(
+                existingUser.bankingDetails,
+                updateData.bankingDetails,
+            );
+            const updatedUser = this.userRepository.merge(existingUser, updateData);
+
+            // Save baking details
+            await queryRunner.manager.save(updatedBankingDetails);
+
+            const result = await queryRunner.manager.save(updatedUser);
+
+            await queryRunner.commitTransaction();
+            return result;
+        } catch (error) {
+            // Rollback transaction in case of error
+            await queryRunner.rollbackTransaction();
+            throw new InternalServerErrorException('Could not create user');
+        } finally {
+            // Release query runner to avoid memory leaks
+            await queryRunner.release();
+        }
     }
 
     updateUserImage(userImage: string): Promise<{ status: string }> {
@@ -68,7 +109,7 @@ export class UserService implements UserServiceInterface {
     async findById(userId: string): Promise<User> {
         const user = await this.userRepository.findOne({
             where: { id: userId },
-            relations: { bankingDetails: true, addresses: true },
+            relations: { bankingDetails: true, addresses: true, roles: true },
         });
         if (!user) {
             throw new NotFoundException('User not found');

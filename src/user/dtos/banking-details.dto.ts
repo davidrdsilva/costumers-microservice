@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Entity } from 'typeorm';
 
-@Entity()
 export class BankingDetailsDto {
     @ApiProperty({ description: 'Agência.' })
     @IsString()
@@ -13,4 +12,16 @@ export class BankingDetailsDto {
     @IsString()
     @IsNotEmpty()
     checkingAccount: string;
+}
+
+export class UpdateBankingDetailsDto {
+    @ApiProperty({ description: 'Agência.', required: false })
+    @IsOptional()
+    @IsString()
+    agency?: string;
+
+    @ApiProperty({ description: 'Conta Corrente', required: false })
+    @IsOptional()
+    @IsString()
+    checkingAccount?: string;
 }

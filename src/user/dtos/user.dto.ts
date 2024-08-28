@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsEmail, IsString, ValidateNested } from 'class-validator';
-import { AddressDto } from './address.dto';
-import { BankingDetailsDto } from './banking-details.dto';
+import { IsArray, IsEmail, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { AddressDto, UpdateAddressDto } from './address.dto';
+import { BankingDetailsDto, UpdateBankingDetailsDto } from './banking-details.dto';
 import { Role } from 'src/auth/enums/role.enum';
 
 export class RoleDto {
@@ -69,43 +69,35 @@ export class CreateUserDto {
 export class UpdateUserDto {
     @ApiProperty({
         description: 'Nome do usuário. Máximo de 50 caracteres.',
+        required: false,
     })
+    @IsOptional()
     @IsString()
     firstName?: string;
 
     @ApiProperty({
         description: 'Sobrenome do usuário. Máximo de 80 caracteres.',
+        required: false,
     })
+    @IsOptional()
     @IsString()
     lastName?: string;
-
-    @ApiProperty({
-        description: 'Endereço de e-mail do usuário. Máximo de 60 caracteres.',
-    })
-    @IsEmail()
-    email?: string;
 
     @ApiProperty({
         description: 'Nome do arquivo de imagem do usuário. Máximo de 70 caracteres.',
         required: false,
     })
+    @IsOptional()
     @IsString()
     userImage?: string;
 
     @ApiProperty({
         description: 'Detalhes bancários do usuário.',
-        type: BankingDetailsDto,
+        required: false,
+        type: UpdateBankingDetailsDto,
     })
+    @IsOptional()
     @ValidateNested()
-    @Type(() => BankingDetailsDto)
-    bankingDetails?: BankingDetailsDto;
-
-    @ApiProperty({
-        description: 'Lista de endereços associados ao usuário.',
-        type: [AddressDto],
-    })
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => AddressDto)
-    addresses?: AddressDto[];
+    @Type(() => UpdateBankingDetailsDto)
+    bankingDetails?: UpdateBankingDetailsDto;
 }
