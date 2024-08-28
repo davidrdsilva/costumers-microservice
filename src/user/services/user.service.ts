@@ -6,6 +6,7 @@ import { UserServiceInterface } from '../interfaces/user.service.interface';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { BankingDetails } from '../entities/banking-details.entity';
 import { Address } from '../entities/address.entity';
+import { Role } from '../entities/role.entity';
 
 @Injectable()
 export class UserService implements UserServiceInterface {
@@ -16,6 +17,8 @@ export class UserService implements UserServiceInterface {
         private readonly bankingDetailsRepository: Repository<BankingDetails>,
         @InjectRepository(Address)
         private readonly addressRepository: Repository<Address>,
+        @InjectRepository(Role)
+        private readonly roleRepository: Repository<Role>,
         private readonly dataSource: DataSource,
     ) {}
 
@@ -29,13 +32,16 @@ export class UserService implements UserServiceInterface {
             const newUser = this.userRepository.create(userDto);
             const newBankingDetails = this.bankingDetailsRepository.create(userDto.bankingDetails);
             const newAddresses = this.addressRepository.create(userDto.addresses);
+            const newRoles = this.roleRepository.create(userDto.roles);
 
             // Save operations inside the transaction
             await queryRunner.manager.save(newBankingDetails);
             await queryRunner.manager.save(newAddresses);
+            await queryRunner.manager.save(newRoles);
 
             newUser.bankingDetails = newBankingDetails;
             newUser.addresses = newAddresses;
+            newUser.roles = newRoles;
 
             const savedUser = await queryRunner.manager.save(newUser);
 
@@ -72,7 +78,9 @@ export class UserService implements UserServiceInterface {
 
     async findByEmail(email: string): Promise<User> {
         const user = await this.userRepository.findOne({
+            select: ['id', 'email', 'roles'],
             where: { email: email },
+            relations: { roles: true },
         });
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');

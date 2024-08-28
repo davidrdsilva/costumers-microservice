@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { BankingDetails } from './banking-details.entity';
 import { Address } from './address.entity';
+import { Role } from './role.entity';
 
 @Entity()
 @Unique(['email'])
@@ -36,6 +37,9 @@ export class User {
 
     @OneToMany(() => Address, (address) => address.user)
     addresses: Address[];
+
+    @OneToMany(() => Role, (role) => role.user)
+    roles: Role[];
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;

@@ -1,6 +1,7 @@
-import { Controller, HttpCode, Param, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
+import { SignInDto } from '../dtos/signin.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -9,7 +10,7 @@ export class AuthController {
 
     @Post()
     @HttpCode(200)
-    async signIn(@Param('email') email: string) {
-        return await this.authService.signIn(email);
+    async signIn(@Body() signInDto: SignInDto) {
+        return await this.authService.signIn(signInDto.email);
     }
 }

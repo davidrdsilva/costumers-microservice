@@ -3,6 +3,15 @@ import { Type } from 'class-transformer';
 import { IsArray, IsEmail, IsString, ValidateNested } from 'class-validator';
 import { AddressDto } from './address.dto';
 import { BankingDetailsDto } from './banking-details.dto';
+import { Role } from 'src/auth/enums/role.enum';
+
+export class RoleDto {
+    @ApiProperty({
+        description: 'Nome da role (admin, user, guest)',
+        enum: Role,
+    })
+    name: Role;
+}
 
 export class CreateUserDto {
     @ApiProperty({
@@ -46,6 +55,15 @@ export class CreateUserDto {
     @ValidateNested({ each: true })
     @Type(() => AddressDto)
     addresses: AddressDto[];
+
+    @ApiProperty({
+        description: 'Role do usuário. Máximo de 10 caracteres.',
+        type: [RoleDto],
+    })
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => RoleDto)
+    roles: RoleDto[];
 }
 
 export class UpdateUserDto {
