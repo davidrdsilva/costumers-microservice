@@ -6,4 +6,5 @@ export interface UserServiceInterface {
     findById(userId: string): Promise<User>;
     update(userDto: UpdateUserDto): Promise<User>;
     updateUserImage(userImage: string): Promise<{ status: string }>;
+    findByEmail(email: string): Promise<User>;
 }

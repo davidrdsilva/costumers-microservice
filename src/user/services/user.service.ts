@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -66,6 +66,16 @@ export class UserService implements UserServiceInterface {
         });
         if (!user) {
             throw new NotFoundException('User not found');
+        }
+        return user;
+    }
+
+    async findByEmail(email: string): Promise<User> {
+        const user = await this.userRepository.findOne({
+            where: { email: email },
+        });
+        if (!user) {
+            throw new UnauthorizedException('Invalid credentials');
         }
         return user;
     }

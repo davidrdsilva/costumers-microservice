@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
@@ -9,6 +9,7 @@ import { User } from '../entities/user.entity';
 import { UserService } from '../services/user.service';
 
 @ApiTags('users')
+@ApiBearerAuth()
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
