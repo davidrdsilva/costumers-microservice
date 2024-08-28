@@ -30,7 +30,7 @@ export class User {
     @Column({ name: 'user_image', length: 70 })
     userImage: string;
 
-    @OneToOne(() => BankingDetails)
+    @OneToOne(() => BankingDetails, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'banking_details_id' })
     bankingDetails: BankingDetails;
 

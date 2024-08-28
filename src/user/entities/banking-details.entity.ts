@@ -1,4 +1,14 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    Unique,
+    UpdateDateColumn,
+} from 'typeorm';
+import { User } from './user.entity';
 
 @Entity()
 @Unique(['agency', 'checkingAccount'])
@@ -11,6 +21,9 @@ export class BankingDetails {
 
     @Column({ name: 'checking_account', length: 30 })
     checkingAccount: string;
+
+    @OneToOne(() => User, (user) => user.bankingDetails, { onDelete: 'CASCADE' })
+    user: User;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;

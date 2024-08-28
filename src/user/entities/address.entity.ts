@@ -33,7 +33,7 @@ export class Address {
     @Column({ type: 'varchar', length: 100, nullable: true })
     district?: string;
 
-    @ManyToOne(() => User, (user) => user.addresses)
+    @ManyToOne(() => User, (user) => user.addresses, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
     user: User;
 
