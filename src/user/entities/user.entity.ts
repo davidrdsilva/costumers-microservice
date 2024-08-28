@@ -6,12 +6,14 @@ import {
     OneToMany,
     OneToOne,
     PrimaryGeneratedColumn,
+    Unique,
     UpdateDateColumn,
 } from 'typeorm';
 import { BankingDetails } from './banking-details.entity';
 import { Address } from './address.entity';
 
 @Entity()
+@Unique(['email'])
 export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
