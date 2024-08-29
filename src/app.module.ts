@@ -7,6 +7,7 @@ import { AuthModule } from './auth/modules/auth.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { BullModule } from '@nestjs/bull';
 import { bullAsyncConfig } from './config/constants/bull.config';
+import { MessagingModule } from './messaging/modules/messaging.module';
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { bullAsyncConfig } from './config/constants/bull.config';
         }),
         TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
         BullModule.registerQueueAsync(bullAsyncConfig),
+        MessagingModule,
         AuthModule,
     ],
 })
