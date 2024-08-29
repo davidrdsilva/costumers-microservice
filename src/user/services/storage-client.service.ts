@@ -29,7 +29,7 @@ export class StorageClientService {
 
     async remove(fileId: string) {
         try {
-            const url = `${this.configService.get('EINSBYM_STORAGE')}/delete/${fileId}`;
+            const url = `${this.configService.get('microservices.storageMicroserviceUrl')}/delete/${fileId}`;
             const response = await axios.delete(url);
 
             return response.data;
