@@ -148,11 +148,15 @@ export class UserService implements UserServiceInterface {
     }
 
     async addUserToQueue(user: Partial<User>) {
-        await this.userQueue.add('user', user, {
-            attempts: 3,
-            backoff: 5000,
-            removeOnComplete: true,
-        });
+        // Check if a job with the same user ID already exists in the queue
+        const existingJob = await this.userQueue.getJob(user.id);
+
+        if (existingJob) {
+            return;
+        }
+
+        // Add user to the queue with their ID as the job ID to prevent duplicates
+        await this.userQueue.add(user, { jobId: user.id });
     }
 
     async getUserFromQueue(email: string) {

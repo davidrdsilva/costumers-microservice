@@ -1,4 +1,22 @@
 services:
+    redis:
+        image: redis:alpine
+        ports:
+            - 6379:6379
+        volumes:
+            - ./redis:/data
+        networks:
+            - bank-microservices-network
+
+    redisadmin:
+        image: erikdubbelboer/phpredisadmin:latest
+        ports:
+            - 8000:80
+        environment:
+            REDIS_1_HOST: redis
+        networks:
+            - bank-microservices-network
+
     bank-microservices-database:
         image: postgres:alpine
         container_name: bank-microservices-database
