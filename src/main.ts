@@ -3,9 +3,29 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    const queues = ['transaction_queue'];
+
+    for (const queue of queues) {
+        app.connectMicroservice({
+            transport: Transport.RMQ,
+            options: {
+                urls: ['amqp://localhost:5672'],
+                queue: queue,
+                noAck: false,
+                queueOptions: {
+                    durable: true,
+                },
+            },
+        });
+    }
+
+    await app.startAllMicroservices();
+
     const configService = app.get(ConfigService);
     const port = configService.get<number>('port');
 

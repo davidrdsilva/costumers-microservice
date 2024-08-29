@@ -1,18 +1,13 @@
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
-import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
+import { Controller, Logger } from '@nestjs/common';
+import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
 
-@Injectable()
-export class MessagingService implements OnModuleInit {
-    private readonly logger = new Logger(MessagingService.name);
-
-    onModuleInit() {
-        this.logger.log('RabbitMQ Consumer Service Initialized');
-    }
+@Controller()
+export class MessagingController {
+    private readonly logger = new Logger(MessagingController.name);
 
     // Define the pattern for consuming messages
-    @EventPattern('transaction_created')
+    @MessagePattern('transaction_created')
     async handleTransactionCreated(@Payload() data: any, @Ctx() context: RmqContext) {
-        console.log('HIIIIIIIIIIIIII FROM CONSUMER');
         const channel = context.getChannelRef();
         const originalMsg = context.getMessage();
 
