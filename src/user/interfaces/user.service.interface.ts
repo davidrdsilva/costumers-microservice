@@ -7,4 +7,6 @@ export interface UserServiceInterface {
     update(req: Request, userId: string, userDto: UpdateUserDto): Promise<User>;
     updateUserImage(ureq: Request, file: any): Promise<{ status: string }>;
     findByEmail(email: string): Promise<User>;
+    addUserToQueue(user: Partial<User>): Promise<void>;
+    getUserFromQueue(email: string): Promise<void>;
 }
