@@ -10,7 +10,7 @@ export class StorageClientService {
 
     async uploadFile(file: any) {
         try {
-            const url = `${this.configService.get('storageMicroserviceUrl')}/upload`;
+            const url = `${this.configService.get('microservices.storageMicroserviceUrl')}/upload`;
             const formData = new FormData();
             const blob = new Blob([file.buffer], { type: file.mimetype });
 

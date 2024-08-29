@@ -19,5 +19,8 @@ export const config = (): ConfigProps => ({
             synchronize: process.env.DB_SYNCRONIZE === 'true' ? true : false,
         },
     },
-    storageMicroserviceUrl: process.env.STORAGE_MICROSERVICE_URL,
+    microservices: {
+        storageMicroserviceUrl: process.env.STORAGE_MICROSERVICE_URL,
+        rabbitMqUrl: process.env.RABBIT_MQ_URL,
+    },
 });

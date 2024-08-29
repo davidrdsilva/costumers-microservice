@@ -7,14 +7,17 @@ import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+    const configService = app.get(ConfigService);
+    const port = configService.get<number>('port');
 
+    // Use Transport
     const queues = ['transaction_queue'];
 
     for (const queue of queues) {
         app.connectMicroservice({
             transport: Transport.RMQ,
             options: {
-                urls: ['amqp://localhost:5672'],
+                urls: [configService.get<string>('microservices.rabbitMqUrl')],
                 queue: queue,
                 noAck: false,
                 queueOptions: {
@@ -25,9 +28,6 @@ async function bootstrap() {
     }
 
     await app.startAllMicroservices();
-
-    const configService = app.get(ConfigService);
-    const port = configService.get<number>('port');
 
     app.useGlobalPipes(new ValidationPipe());
     app.setGlobalPrefix('api');
