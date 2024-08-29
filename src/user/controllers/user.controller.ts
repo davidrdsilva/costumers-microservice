@@ -62,6 +62,7 @@ export class UserController {
     }
 
     @Put('/profile-picture')
+    @Roles(Role.User)
     @ApiConsumes('multipart/form-data')
     @ApiBody({
         schema: {

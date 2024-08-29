@@ -5,6 +5,8 @@ import { config } from './config/constants/general.config';
 import { typeOrmAsyncConfig } from './config/constants/typeorm.config';
 import { AuthModule } from './auth/modules/auth.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { BullModule } from '@nestjs/bull';
+import { bullAsyncConfig } from './config/constants/bull.config';
 
 @Module({
     imports: [
@@ -13,6 +15,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
             load: [config],
         }),
         TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
+        BullModule.registerQueueAsync(bullAsyncConfig),
         AuthModule,
     ],
 })

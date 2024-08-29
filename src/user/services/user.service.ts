@@ -14,6 +14,8 @@ import { BankingDetails } from '../entities/banking-details.entity';
 import { Address } from '../entities/address.entity';
 import { Role } from '../entities/role.entity';
 import { StorageClientService } from './storage-client.service';
+import { InjectQueue } from '@nestjs/bull';
+import { Job, Queue } from 'bull';
 
 @Injectable()
 export class UserService implements UserServiceInterface {
@@ -26,6 +28,8 @@ export class UserService implements UserServiceInterface {
         private readonly addressRepository: Repository<Address>,
         @InjectRepository(Role)
         private readonly roleRepository: Repository<Role>,
+        @InjectQueue('user')
+        private readonly userQueue: Queue,
         private readonly dataSource: DataSource,
         private readonly storageClientService: StorageClientService,
     ) {}
@@ -141,5 +145,30 @@ export class UserService implements UserServiceInterface {
             throw new UnauthorizedException('Invalid credentials');
         }
         return user;
+    }
+
+    async addUserToQueue(user: Partial<User>) {
+        await this.userQueue.add('user', user, {
+            attempts: 3,
+            backoff: 5000,
+            removeOnComplete: true,
+        });
+    }
+
+    async getUserFromQueue(email: string) {
+        const jobs: Job[] = await this.userQueue.getJobs(['waiting', 'active', 'completed']);
+
+        if (jobs[0] === null) {
+            return;
+        }
+
+        // Find job with the matching user ID
+        const job = jobs.find((job) => job.data.email === email);
+
+        if (!job) {
+            return;
+        }
+
+        return job.data;
     }
 }

@@ -7,9 +7,15 @@ import { BankingDetails } from '../entities/banking-details.entity';
 import { Address } from '../entities/address.entity';
 import { Role } from '../entities/role.entity';
 import { StorageClientService } from '../services/storage-client.service';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User, BankingDetails, Address, Role])],
+    imports: [
+        TypeOrmModule.forFeature([User, BankingDetails, Address, Role]),
+        BullModule.registerQueue({
+            name: 'user',
+        }),
+    ],
     controllers: [UserController],
     providers: [UserService, StorageClientService],
     exports: [UserService],

@@ -13,6 +13,9 @@ export class AuthService {
         const user = await this.usersService.findByEmail(email);
         const payload = { sub: user.email };
 
+        // Add user to cache
+        await this.usersService.addUserToQueue(user);
+
         return {
             accessToken: await this.jwtService.signAsync(payload),
             user: user,
