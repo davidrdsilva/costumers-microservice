@@ -6,11 +6,12 @@ import { UserController } from '../controllers/user.controller';
 import { BankingDetails } from '../entities/banking-details.entity';
 import { Address } from '../entities/address.entity';
 import { Role } from '../entities/role.entity';
+import { StorageClientService } from '../services/storage-client.service';
 
 @Module({
     imports: [TypeOrmModule.forFeature([User, BankingDetails, Address, Role])],
     controllers: [UserController],
-    providers: [UserService],
+    providers: [UserService, StorageClientService],
     exports: [UserService],
 })
 export class UserModule {}

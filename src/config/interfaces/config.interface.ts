@@ -21,4 +21,5 @@ export interface ConfigProps {
     database: {
         main: DatabaseConfigProps;
     };
+    storageMicroserviceUrl: string;
 }

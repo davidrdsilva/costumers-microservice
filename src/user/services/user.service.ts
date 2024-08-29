@@ -13,6 +13,7 @@ import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { BankingDetails } from '../entities/banking-details.entity';
 import { Address } from '../entities/address.entity';
 import { Role } from '../entities/role.entity';
+import { StorageClientService } from './storage-client.service';
 
 @Injectable()
 export class UserService implements UserServiceInterface {
@@ -26,6 +27,7 @@ export class UserService implements UserServiceInterface {
         @InjectRepository(Role)
         private readonly roleRepository: Repository<Role>,
         private readonly dataSource: DataSource,
+        private readonly storageClientService: StorageClientService,
     ) {}
 
     async create(userDto: CreateUserDto): Promise<User> {
@@ -102,8 +104,20 @@ export class UserService implements UserServiceInterface {
         }
     }
 
-    updateUserImage(userImage: string): Promise<{ status: string }> {
-        throw new Error('Method not implemented.');
+    async updateUserImage(req: Request, file: Express.Multer.File): Promise<{ status: string }> {
+        const user: User = req['user'];
+
+        try {
+            const uploadedFile = await this.storageClientService.uploadFile(file);
+
+            await this.userRepository.update(user.id, {
+                userImage: uploadedFile.filename,
+            });
+
+            return { status: 'User image updated.' };
+        } catch (error) {
+            throw new InternalServerErrorException('Could not update the profile image. Check the log for details.');
+        }
     }
 
     async findById(userId: string): Promise<User> {
