@@ -22,6 +22,8 @@ services:
 
     redisadmin:
         image: erikdubbelboer/phpredisadmin:latest
+        depends_on:
+            - redis
         ports:
             - 8000:80
         environment:
@@ -48,8 +50,24 @@ services:
         container_name: costumers-microservice
         depends_on:
             - bank-microservices-database
-        env_file:
-            - ./.env
+            - redis
+            - rabbitmq
+        environment:
+            - SERVER_PORT=3000
+            - SECURITY_ENABLED=true
+            - JWT_SECRET=thisismysecretjwt
+
+            - DB_HOST=bank-microservices-database
+            - DB_PORT=5432
+            - DB_USER=postgres
+            - DB_PASSWORD=dhhfn874_pdo|js__sundmdKJ7668
+            - DB_NAME=bank-microservices-database
+            - DB_SYNCRONIZE=false
+
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - STORAGE_MICROSERVICE_URL=http://localhost:8080/storage
+            - RABBIT_MQ_URL=amqp://rabbitmq:5672
         ports:
             - 3000:3000
         networks:
