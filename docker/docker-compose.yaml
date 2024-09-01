@@ -1,7 +1,7 @@
 services:
     rabbitmq:
         image: rabbitmq:3-management-alpine
-        container_name: 'rabbitmq'
+        container_name: rabbitmq
         ports:
             - 5672:5672
             - 15672:15672
@@ -62,11 +62,11 @@ services:
             - DB_USER=postgres
             - DB_PASSWORD=dhhfn874_pdo|js__sundmdKJ7668
             - DB_NAME=bank-microservices-database
-            - DB_SYNCRONIZE=false
+            - DB_SYNCRONIZE=true
 
             - REDIS_HOST=redis
             - REDIS_PORT=6379
-            - STORAGE_MICROSERVICE_URL=http://localhost:8080/storage
+            - STORAGE_MICROSERVICE_URL=storage-microservice:8080/storage
             - RABBIT_MQ_URL=amqp://rabbitmq:5672
         ports:
             - 3000:3000
