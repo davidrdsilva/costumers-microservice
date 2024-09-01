@@ -1,11 +1,17 @@
-.env
+# hidden files and folders
+.git
 .env.template
-
-*.md
-
-.vscode
 .husky
 .github
+.vscode
 
+# compiled output
 dist
 node_modules
+redis
+
+# e2e tests folder
+test
+
+# markdown files
+*.md
